@@ -1,0 +1,64 @@
+﻿@model AddUserViewModel
+@{
+    ViewData["Title"] = "Add User";
+}
+
+
+<div class="row" style="justify-content:center">
+    <div class="col-md-6">
+        <h1>@ViewData["Title"]</h1>
+        <form id="registerForm" method="post">
+            <hr />
+            <div class="form-floating mb-3">
+                <input asp-for="@Model.FirstName" class="form-control" aria-required="true" placeholder="" maxlength="100" />
+                <label asp-for="@Model.FirstName">FirstName</label>
+                <span asp-validation-for="@Model.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="@Model.LastName" class="form-control" aria-required="true" placeholder="" maxlength="100" />
+                <label asp-for="@Model.LastName">LastName</label>
+                <span asp-validation-for="@Model.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="@Model.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <label asp-for="@Model.Email">Email</label>
+                <span asp-validation-for="@Model.Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="@Model.Username" class="form-control" autocomplete="username" aria-required="true" placeholder="" />
+                <label asp-for="@Model.Username">User Name</label>
+                <span asp-validation-for="@Model.Username" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="@Model.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <label asp-for="@Model.Password">Password</label>
+                <span asp-validation-for="@Model.Password" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="@Model.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <label asp-for="@Model.ConfirmPassword">Confirm Password</label>
+                <span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="@Model.Roles">Roles</label><hr />
+                @for (int i = 0; i < Model.Roles.Count; i++)
+                {
+                    <div class="form-check m-1">
+                        <input type="hidden" asp-for="@Model.Roles[i].RoleName" />
+                        <input type="hidden" asp-for="@Model.Roles[i].RoleId" />
+
+                        <input class="form-check-input" asp-for="@Model.Roles[i].IsSelected" />
+                        <label class="form-check-label" asp-for="@Model.Roles[i].IsSelected">
+                            @Model.Roles[i].RoleName
+                        </label>
+                    </div>
+                }
+                <span asp-validation-for="Roles" class="text-danger"></span>
+            </div>
+            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Add</button>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

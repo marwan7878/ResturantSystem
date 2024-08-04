@@ -1,0 +1,103 @@
+﻿@model IEnumerable<UserViewModel>
+
+
+@{
+    ViewData["Title"] = "Users";
+}
+<h1>Users</h1>
+<a class="btn btn-primary" asp-controller="Users" asp-action="Create">Add User</a>
+
+<div id="alert" class="alert alert-success mt-2 p-2 d-none" role="alert">
+    User deleted.
+</div>
+<div id="reject-alert" class="alert alert-danger mt-2 p-2 d-none" role="alert">
+    Sorry , you can't delete your user.
+</div>
+
+<table class="table table-striped mt-4">
+    <thead>
+        <tr class="bg-primary text-white">
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>User Name</th>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (UserViewModel user in Model)
+        {
+            <tr>
+                <td>@user.FirstName</td>
+                <td>@user.LastName</td>
+                <td>@user.Username</td>
+                <td>@user.Email</td>
+                <td>@string.Join(" , ",user.Roles.ToList())</td>
+                <td>
+                    <a class="btn btn-secondary" asp-controller="Users" asp-action="Edit" asp-route-UserId="@user.Id">Edit</a>
+                    <button id="deleteBtn" data-flag="@user.IsMine" class="btn btn-danger js-delete" data-id="@user.Id">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@section Scripts{
+    <script>
+        let btnn = document.getElementById("deleteBtn")
+        window.onload = function () {
+            // Iterate over all delete buttons
+            document.querySelectorAll('.js-delete').forEach(function (btnn) {
+                if (btnn.dataset.flag === 'True') {
+                    btnn.disabled = true;
+                }
+            });
+        }
+        
+        $(document).ready(function () {
+            $('.js-delete').on('click', function () {
+                var btn = $(this);
+
+                bootbox.confirm({
+                    title:'Delete',
+                    message: 'Do you want to delete the user now? This cannot be undone.',
+                    buttons: {
+                        cancel: {
+                            label: '<i class="fa fa-times"></i> Cancel',
+                            className:'btn-secondary'
+                        },
+                        confirm: {
+                            label: '<i class="fa fa-check"></i> Confirm',
+                            className: 'btn-danger'
+                        }
+                    },
+                    callback: function (result) {
+                        if (result) {
+                            $.ajax({
+                                url: '/api/Users/delete' + '?userId=' + btn.data('id'),
+                                method:'DELETE',
+                                success: function (result) {
+                                    if (!result) {
+                                        $('#reject-alert').removeClass('d-none');
+                                    }
+                                    else {
+                                        btn.parents('tr').fadeOut();
+                                        $('#alert').removeClass('d-none');
+                                    }
+                                }
+                            })
+                        }
+                    }
+                });
+
+                
+            });
+        });
+
+        
+        </script>
+        
+}
+
